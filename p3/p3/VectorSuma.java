@@ -13,7 +13,7 @@ static int []v;
 // main para probar funcionamiento y medir tiempos
 public static void main (String arg []) 
 {
-	int n = 100;
+	int n = 1000;
 	v = new int[n];
 	rellenar(v);
 	 
