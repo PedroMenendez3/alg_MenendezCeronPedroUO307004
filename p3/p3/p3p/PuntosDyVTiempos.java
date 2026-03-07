@@ -21,11 +21,11 @@ public static void main (String arg [])
 {
 	long t1,t2;
 	double[][] puntos = null;
-	for(int i = 128; i <= 262144; i*=2){
+	for(int i = 128; i <= Math.pow(2, 30); i*=2){
 		puntos = rellenarVector(i);
 		t1 = System.currentTimeMillis ();
 
-		PuntosDyV.puntosDyV(puntos, 0, i - 1);
+		PuntosDyV.puntosDyV(puntos);
 
 		t2 = System.currentTimeMillis();
 		System.out.println (" n="+i+ "**TIEMPO="+(t2-t1));

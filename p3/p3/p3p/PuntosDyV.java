@@ -1,12 +1,19 @@
 package p3p;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class PuntosDyV
 {
+
+private static double minDistancia = Double.POSITIVE_INFINITY;
+private static double[][] matrizPuntos;
+private static double[] punto1 = new double[2];
+private static double[] punto2 = new double[2];
 
 private static double distancia(double[] p1, double[] p2){
 	double dx = p1[0] - p2[0];
@@ -15,61 +22,69 @@ private static double distancia(double[] p1, double[] p2){
 
 }
 
-public static double[] puntosDyV (double[][] puntos, int izq, int dcha)
+public static double[] puntosDyV(double[][] puntos) {
+    minDistancia = Double.POSITIVE_INFINITY;
+    punto1 = new double[2];
+    punto2 = new double[2];
+    matrizPuntos = puntos;
+    return puntosDyV();
+}
+
+public static double[] puntosDyV ()
 { 
-	//Caso base: solo quedan 2 puntos
-	if(dcha - izq == 1){
-		return new double[]{puntos[izq][0], puntos[izq][1], puntos[dcha][0], puntos[dcha][1], distancia(puntos[izq], puntos[dcha])};
-	}
+	Arrays.sort(matrizPuntos, Comparator.comparingDouble(p ->p[0]));
 
-	int medio = (izq + dcha)/2;
+    int izq = 0;
+    int dcha = matrizPuntos.length - 1;
 
-	double[] resultadoIzq = puntosDyV(puntos, izq, medio);
-	double[] resultadoDcha = puntosDyV(puntos, medio + 1, dcha);
+    buscarDistanciaMinimaRec(matrizPuntos, izq, dcha);
 
-	//Nos quedamos con la mitad que tenga una distancia menor
-	double[] resultado = null;
-	if(resultadoIzq[4] < resultadoDcha[4]){
-		resultado = resultadoIzq;
-	} else {
-		resultado = resultadoDcha;
-	}
+    return new double[]{punto1[0], punto1[1], punto2[0], punto2[1], minDistancia};
 
-	//Se comparan los puntos de las dos mitades
-	double distancia;
-	for(int i = izq; i <= medio; i++){
-		for(int j = medio + 1; j < dcha; j++){
-			
-			distancia = distancia(puntos[i], puntos[j]);
 
-			if(distancia < resultado[4]){
-				resultado[0] = puntos[i][0];
-				resultado[1] = puntos[i][1];
-				resultado[2] = puntos[j][0];
-				resultado[3] = puntos[j][1];
-				resultado[4] = distancia;
-			}
-		}
-	}
-
-	return resultado;
 }
 	   
+private static void buscarDistanciaMinimaRec(double[][] matriz, int iz, int de){
+    if(de - iz == 1){
+        double d = distancia(matriz[iz], matriz[de]);
+        if(d < minDistancia){
+            minDistancia = d;
+            punto1[0] = matriz[iz][0];
+            punto1[1] = matriz[iz][1];
+            punto2[0] = matriz[de][0];
+            punto2[1] = matriz[de][1];
+        }
+        return;
+    }
+
+	int medio = (iz + de)/2;
+
+    buscarDistanciaMinimaRec(matriz, iz, medio);
+    buscarDistanciaMinimaRec(matriz, medio + 1, de);
+
+    double d = distancia(matriz[medio], matriz[medio + 1]);
+    if (d < minDistancia) {
+        minDistancia = d;
+        punto1[0] = matriz[medio][0];
+        punto1[1] = matriz[medio][1];
+        punto2[0] = matriz[medio + 1][0];
+        punto2[1] = matriz[medio + 1][1];
+    }
+}
+
 
 public static void main (String arg []) 
 {
-	
 	String[] datosPuntos = null;
 	int contador = 0;
-	double[][] puntos = null;
 	try{
 		BufferedReader fichero = new BufferedReader(new FileReader(arg[0]));
-		puntos = new double[Integer.parseInt(fichero.readLine())][2];
+		matrizPuntos = new double[Integer.parseInt(fichero.readLine())][2];
 		while (fichero.ready()) {
 			String linea = fichero.readLine();
 			datosPuntos = linea.split(",");
-			puntos[contador][0] = Double.parseDouble(datosPuntos[0]);
-			puntos[contador][1] = Double.parseDouble(datosPuntos[1]);
+			matrizPuntos[contador][0] = Double.parseDouble(datosPuntos[0]);
+			matrizPuntos[contador][1] = Double.parseDouble(datosPuntos[1]);
 			contador++;
 		}
 		fichero.close();
@@ -79,11 +94,10 @@ public static void main (String arg [])
 		new RuntimeException("Error de entrada/salida.");
 	}
 	
-	
-	double[] cercanos = puntosDyV(puntos, 0, puntos.length - 1);
+	double[] cercanos = puntosDyV();
 
 	System.out.printf( "PUNTOS MÁS CERCANOS: [%.6f, %.6f][%.6f, %.6f]\n", cercanos[0],cercanos[1],cercanos[2],cercanos[3]);
 	System.out.printf("SU DISTANCIA MINIMA=%.6f",cercanos[4]);
-	}  // for
-} // main
- 
+	} 
+}
+
