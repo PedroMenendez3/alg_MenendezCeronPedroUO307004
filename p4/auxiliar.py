@@ -111,22 +111,22 @@ def dibujar_mapa_coloreado(grafo, colores):
 if __name__ == "__main__":
 
     # Generar un mapa con 100 nodos
-    mapa = generar_mapa_grafo(100)
-    print(mapa)
+    # mapa = generar_mapa_grafo(100)
+    # print(mapa)
 
-    """
+    
     # Podemos cargar la información desde archivos JSON, si se prefiere generar la solución en Java.
-    with open('sols/graph.json') as f:
+    with open('sols/g100.json') as f:
         mapa = json.load(f)
         f.close()
         
-    with open('sols/solucion.json') as f:
+    with open('solucion.json') as f:
         colores_nodos = json.load(f)
         f.close()
-    """
-    colores_nodos = {}
-    for nodo in mapa["grafo"].keys():
-        colores_nodos[nodo] = "red"
+    
+    # colores_nodos = {}
+    # for nodo in mapa["grafo"].keys():
+    #     colores_nodos[nodo] = nodo
     # Visualizar el mapa
     dibujar_mapa_coloreado(mapa, colores_nodos)
 
