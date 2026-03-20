@@ -1,4 +1,4 @@
-package labs.en._26.algteacher.s5;
+
 
 import static org.junit.Assert.assertEquals;
 
