@@ -13,6 +13,7 @@ public class AlmacenajeContenedores {
     private Integer[] conjuntoS;
     private int mejorK; //Numero minimo de contenedores
     private List<List<Integer>> mejorDistribucion; 
+    private int llamadasRecursivas = 0;
 
     public AlmacenajeContenedores(int capacidadC, Integer[] conjuntoS){
         this.capacidadC = capacidadC;
@@ -31,6 +32,7 @@ public class AlmacenajeContenedores {
     }
 
     private void backTracking(int indexObject, List<List<Integer>> contenedores){
+        llamadasRecursivas++;
         //Caso base
         if(indexObject == conjuntoS.length){
             if(contenedores.size() < mejorK){
@@ -72,7 +74,7 @@ public class AlmacenajeContenedores {
     private List<List<Integer>> copiar(List<List<Integer>> contenedores){
         List<List<Integer>> copia = new ArrayList<>();
         for(List<Integer> i : contenedores){
-            copia.add(i);
+            copia.add(new ArrayList<>(i));
         }
         return copia;
     }
@@ -87,8 +89,13 @@ public class AlmacenajeContenedores {
 
     private void imprimirSolucion(){
         System.out.println("Lista de contenedores y objetos contenidos: ");
+        if(mejorDistribucion == null){
+            System.out.print("no hay mejor distribucion");
+            return;
+        }
+            
         for(int i = 0; i < mejorDistribucion.size(); i++){
-            System.out.print("Contenedor " + i + ": ");
+            System.out.print("Contenedor " + (i+1) + ": ");
             for(int j = 0; j < mejorDistribucion.get(i).size(); j++){
                 System.out.print(mejorDistribucion.get(i).get(j) + " ");
             }
@@ -96,13 +103,15 @@ public class AlmacenajeContenedores {
         }
 
         System.out.println("El número de contenedores necesario es " + mejorK);
+        System.out.println("Se han realizado " + llamadasRecursivas + " llamadas recursivas");
     }
 
-    public static void main(String[] args){
+    public static void main(String archivo){
         try {
             Scanner sc;
-            sc = new Scanner(new FileReader(args[0]));
+            sc = new Scanner(new FileReader(archivo));
             int capacidadC = sc.nextInt();
+            sc.nextLine();
             String[] parts = sc.nextLine().split(" ");
             Integer[] toS = new Integer[parts.length];
             
@@ -118,13 +127,5 @@ public class AlmacenajeContenedores {
             System.out.println("Reventó");
         }
     }
-
-
-
-
-
-
-
-
 
 }
