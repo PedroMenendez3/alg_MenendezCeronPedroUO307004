@@ -9,7 +9,7 @@ import java.util.List;
  * En su lugar, vamos a registrar las columnas y diagonales que ya están bajo ataque utilizando tres arreglos booleanos: 
  * uno para las columnas, otro para las diagonales principales (de arriba a abajo, izquierda a derecha) y otro para las diagonales secundarias (de arriba a abajo, derecha a izquierda).
  */
-public class NReinas {
+public class NReinas_UO {
     
     private List<List<String>> soluciones; // cada lista interna de Strings representa un tablero completo donde cada String es una fila.
 
@@ -26,11 +26,25 @@ public class NReinas {
         soluciones = new ArrayList<>();
         
         // Inicializamos los rastreadores de ataques en columnas y diagonales
-        
+        columnas = new boolean[n];
+        diagonalesPrincipales = new boolean[2*n-1];
+        diagonalesSecundarias = new boolean[2*n-1];
+        for(int i = 0; i < 2*n-1; i++){
+            diagonalesPrincipales[i] = true;
+            diagonalesSecundarias[i] = true;
+        }
+
         // Inicializar el tablero vacío con puntos '.' (os doy un método) 
-        
+        char[][] tablero = new char[n][n];
+        for(int i = 0; i < n; i++){
+            columnas[i] = true;
+            for(int j = 0; j < n; j++){
+                tablero[i][j] = '.';
+            }
+        }
+
         // Iniciar el backtracking 
-        
+        backtracking(0, n, tablero);
         return soluciones;
     }
 
@@ -44,20 +58,31 @@ public class NReinas {
      */
     private void backtracking(int fila, int n, char[][] tablero) {
         // Caso base: si logramos llegar a la fila n, colocamos todas las reinas con éxito
+        if(fila == n){
+            soluciones.add(construirSolucion(tablero));
+            return;
+        }
        
-
         for (int col = 0; col < n; col++) {
 
             // Fórmulas matemáticas para identificar la diagonal a la que pertenece una celda
             int d1 = fila - col + (n - 1); // Diagonal principal (\)
             int d2 = fila + col;           // Diagonal secundaria (/)
 
-
-            // 1. Avanzar -> Colocar la reina (meter un 'Q') y marcar la columna y diagonales como atacadas
-           
-            // 2. backtracking
-
-            // 3. Retroceder
+            if(diagonalesPrincipales[d1] && diagonalesSecundarias[d2] && columnas[col]){
+                // 1. Avanzar -> Colocar la reina (meter un 'Q') y marcar la columna y diagonales como atacadas
+                columnas[col] = false;
+                diagonalesPrincipales[d1] = false;
+                diagonalesSecundarias[d2] = false;
+                tablero[fila][col] = 'Q';
+                // 2. backtracking
+                backtracking(fila+1, n, tablero);
+                // 3. Retroceder
+                columnas[col] = true;
+                diagonalesPrincipales[d1] = true;
+                diagonalesSecundarias[d2] = true;
+                tablero[fila][col] = '.';
+            }
         }
     }
 
@@ -105,13 +130,20 @@ public class NReinas {
      *  @param args, el primer argumento es el valor de N, o se usará 4 por defecto.
      */ 
     public static void main(String[] args) {
-        NReinas algoritmo = new NReinas();
-        int n = args != null && args.length > 0 ? Integer.parseInt(args[0]) : 4; 
-        List<List<String>> resultado = algoritmo.resolverNReinas(n);
+        long t1,t2;
+        NReinas_UO algoritmo = new NReinas_UO();
+        int n = args != null && args.length > 0 ? Integer.parseInt(args[0]) : 6; 
+        for(int i = 4; i < 20; i++){
+            t1 = System.currentTimeMillis();
+            List<List<String>> resultado = algoritmo.resolverNReinas(i);
+            t2 = System.currentTimeMillis();
+            System.out.println(" test " +i+"**TIEMPO="+(t2-t1));
+        }
         
-        System.out.println("Se encontraron " + resultado.size() + " soluciones para N = " + n + "\n");
         
-        pintarTablero(resultado);
+        // System.out.println("Se encontraron " + resultado.size() + " soluciones para N = " + n + "\n");
+        
+        // pintarTablero(resultado);
     }
 
 }
