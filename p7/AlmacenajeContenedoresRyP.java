@@ -43,7 +43,7 @@ public class AlmacenajeContenedoresRyP {
         List<List<Integer>> contenedores = new ArrayList<>();
         backTracking(0, contenedores, sumarS());
         //mostrar solucion
-        imprimirSolucion();
+        //imprimirSolucion();
     }
 
     private void backTracking(int indexObject, List<List<Integer>> contenedores, int sumaRestante){
@@ -131,10 +131,10 @@ public class AlmacenajeContenedoresRyP {
         System.out.println("Se han realizado " + llamadasRecursivas + " llamadas recursivas");
     }
 
-    public static void main(String[] archivo){
+    public static void main(String archivo){
         try {
             Scanner sc;
-            sc = new Scanner(new FileReader(archivo[0]));
+            sc = new Scanner(new FileReader(archivo));
             int capacidadC = sc.nextInt();
             sc.nextLine();
             String[] parts = sc.nextLine().split(" ");
