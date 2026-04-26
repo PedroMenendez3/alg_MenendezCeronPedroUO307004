@@ -1,4 +1,4 @@
-package p3;
+
 
 /* Resolverenos Fibonacci mediante 4 algorirmos diferentes y 
    tomaremos tiempos para un n ejemplo
